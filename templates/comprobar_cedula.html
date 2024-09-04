@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Comprobar Cédula</title>
+       {% load static %}
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <script type="text/javascript">
+        $(function (){
+            $("#guardar").click(function (){
+                alert();
+            })
+        })
+    </script>
+    
+</head>
+
+<body>
+    <form id="comprobarCedulaForm">
+        <input type="text" id="user_cedula" name="user_cedula" placeholder="Ingrese su cédula">
+        <button id="guardar">Comprobar</button>
+    </form>
+    <input type="text" id="user_nombres" name="user_nombres" placeholder="Nombres">
+    <input type="text" id="user_apellido_p" name="user_apellido_p" placeholder="Apellido Paterno">
+    <input type="text" id="user_apellido_m" name="user_apellido_m" placeholder="Apellido Materno">
+    <input type="email" id="user_correo" name="user_correo" placeholder="Correo">
+    <input type="text" id="user_telefono_Movil" name="user_telefono_Movil" placeholder="Teléfono Móvil">
+</body>
+
+
+
+</html>

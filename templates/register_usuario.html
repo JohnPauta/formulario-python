@@ -1,0 +1,28 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="user_nombres">Nombres</label>
+        {{ form.user_nombres }}
+    </div>
+    <div class="form-group">
+        <label for="user_apellido_p">Apellido Paterno</label>
+        {{ form.user_apellido_p }}
+    </div>
+    <div class="form-group">
+        <label for="user_apellido_m">Apellido Materno</label>
+        {{ form.user_apellido_m }}
+    </div>
+    <div class="form-group">
+        <label for="user_correo">Correo</label>
+        {{ form.user_correo }}
+    </div>
+    <div class="form-group">
+        <label for="user_telefono_Movil">Teléfono Móvil</label>
+        {{ form.user_telefono_Movil }}
+    </div>
+    <span class="text-danger">
+        Por favor comprueba que tus datos sean correctos antes de guardar el comprobante.
+        En caso de que sean diferentes, por favor comunicarse con Soporte: +593 98 572 7047
+    </span>
+    <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+</form>

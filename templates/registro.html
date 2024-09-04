@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/jquery-3.7.1.js"></script>
+    <script type="text/javascript">
+        $(function () {
+        
+            $("#guardar").click(function () {
+            alert();
+            var nombre= $("#nombre").val();
+            $.ajax({
+                type: "POST",
+                url: "/",
+                data: { 'nombre': nombre },
+                success: function(data) {
+                    
+                    if (data.result === 'ok'){
+                        // guardo
+                    } else {
+                        // no guardo
+                    }
+                },
+                error: function() {
+                    
+                    // no guardo
+                },
+                dataType: "json"
+            });
+        });
+            
+            
+        })
+    </script>
+</head>
+<body>
+    registro
+    <input type="nombre" id="nombre">
+    <button id="guardar">guardar</button>
+</body>
+</html>
