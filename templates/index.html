@@ -1,30 +1,62 @@
-<!DOCTYPE html>
+<!-- templates/index.html -->
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Single Page Application</title>
-    <!-- Incluye tus archivos CSS y JS aquí -->
-       {% load static %}
-    <script src="{% static 'js/main.js' %}"></script>
+    <title>Registro por Pasos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js"></script>
 </head>
 <body>
-    <div id="app">
-        <button onclick="loadForm('comprobar_cedula')">Comprobar Cédula</button>
-        <button onclick="loadForm('register_usuario')">Registrar Usuario</button>
-        <div id="content"></div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <h1>Registro por Pasos</h1>
+    <form id="form">
+        <h3>Verificar Cédula</h3>
+        <section>
+            <label for="cedula">Cédula:</label>
+            <input type="text" id="cedula" name="cedula">
+            <button type="button" id="verify">Verificar</button>
+        </section>
+        <h3>Enviar Datos</h3>
+        <section>-->
+            <!-- Aquí irían los campos para enviar los datos -->
+            <!--<button type="button" id="submit">Enviar Datos</button>
+        </section>
+    </form>
+
     <script>
-        function loadForm(formName) {
-            fetch(`/${formName}/`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('content').innerHTML = html;
-                })
-                .catch(error => console.warn('Error loading form:', error));
-        }
+        $(document).ready(function() {
+            $("#form").steps({
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slideLeft",
+                onFinished: function (event, currentIndex) {
+                    alert("Formulario completado!");
+                }
+            });
+
+            $("#verify").click(function() {
+                var cedula = $("#cedula").val();
+                $.post("{% url 'verify_cedula' %}", { cedula: cedula, csrfmiddlewaretoken: '{{ csrf_token }}' }, function(data) {
+                    if (data.success) {
+                        alert(data.message);
+                    } else {
+                        alert("Error al verificar la cédula");
+                    }
+                });
+            });
+
+            $("#submit").click(function() {
+                var formData = $("#form").serialize();
+                $.post("{% url 'submit_data' %}", formData, function(data) {
+                    if (data.success) {
+                        alert(data.message);
+                    } else {
+                        alert("Error al enviar los datos");
+                    }
+                });
+            });
+        });
     </script>
 </body>
-</html>
+</html>-->

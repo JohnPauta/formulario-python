@@ -1,30 +1,13 @@
-"""
-URL configuration for formulario project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
+# urls.py
 from django.urls import path
-from app.views import index, comprobar_cedula, register_usuario
+from app import views  # Importa el módulo views completo
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', index, name='index'),
-    path('comprobar_cedula/', comprobar_cedula, name='comprobar_cedula'),
-    path('register_usuario/', register_usuario, name='register_usuario'),
+    path('', views.index, name='index'),
+
+    path('verify/', views.verify_cedula, name='verify_cedula'),
+
+    path('submit/', views.submit_data, name='submit_data'),
+
+    path('comprobante/', views.submit_data, name='submit_comprobante'),
 ]
-
-
-
-

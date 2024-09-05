@@ -1,25 +1,27 @@
+# views.py
+from django.shortcuts import render
+from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import ComprobarCedulaForm, RegisterUsuarioForm
+from datetime import datetime
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'registro.html')
 
-def comprobar_cedula(request):
+def verify_cedula(request):
     if request.method == 'POST':
-        form = ComprobarCedulaForm(request.POST)
-        if form.is_valid():
-            # Procesar la cédula
-            pass
-    else:
-        form = ComprobarCedulaForm()
-    return render(request, 'comprobar_cedula.html', {'form': form})
+        cedula = request.POST.get('cedula')
+        # Aquí iría la lógica para verificar la cédula
+        return JsonResponse({'success': True, 'message': 'Cédula verificada'})
 
-def register_usuario(request):
+def submit_data(request):
     if request.method == 'POST':
-        form = RegisterUsuarioForm(request.POST)
-        if form.is_valid():
-            # Procesar el registro del usuario
-            pass
-    else:
-        form = RegisterUsuarioForm()
-    return render(request, 'register_usuario.html', {'form': form})
+        data = request.POST
+        # Aquí iría la lógica para enviar los datos al SGA
+        return JsonResponse({'success': True, 'message': 'Datos del estudiante enviados al SGA'})
+
+def submit_comprobante(request):
+    if request.method == 'POST':
+        data = request.POST
+        # Aquí iría la lógica para enviar los datos al SGA
+        return JsonResponse({'success': True, 'message': 'Datos del comprobante enviados al SGA'})

@@ -2,41 +2,220 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="/static/jquery-3.7.1.js"></script>
-    <script type="text/javascript">
-        $(function () {
-        
-            $("#guardar").click(function () {
-            alert();
-            var nombre= $("#nombre").val();
-            $.ajax({
-                type: "POST",
-                url: "/",
-                data: { 'nombre': nombre },
-                success: function(data) {
-                    
-                    if (data.result === 'ok'){
-                        // guardo
-                    } else {
-                        // no guardo
-                    }
-                },
-                error: function() {
-                    
-                    // no guardo
-                },
-                dataType: "json"
-            });
-        });
-            
-            
-        })
-    </script>
+    <title>Registro por Pasos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js"></script>
 </head>
 <body>
-    registro
-    <input type="nombre" id="nombre">
-    <button id="guardar">guardar</button>
+    <h1>Registro por Pasos</h1>
+    <form id="form">
+        <h3>Verificar Cédula</h3>
+        <section>
+            <label for="nombre">Cédula:</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ingrese su cédula">
+            <button type="button" id="comprobar">Comprobar Cédula</button>
+        </section>
+        <h3>Enviar Datos</h3>
+        <section>
+            <div id="datosEstudiante">
+                <label for="user_nombres">Nombre:</label>
+                <input type="text" id="user_nombres" placeholder="Nombre">
+                <label for="user_apellido_p">Apellido Paterno:</label>
+                <input type="text" id="user_apellido_p" placeholder="Apellido Paterno">
+                <label for="user_apellido_m">Apellido Materno:</label>
+                <input type="text" id="user_apellido_m" placeholder="Apellido Materno">
+                <label for="user_correo">Correo:</label>
+                <input type="text" id="user_correo" placeholder="Correo">
+                <label for="user_telefono_Movil">Teléfono Móvil:</label>
+                <input type="text" id="user_telefono_Movil" placeholder="Teléfono Móvil">
+                <label for="user_sexo">Sexo:</label>
+                <input type="text" id="user_sexo" placeholder="Sexo">
+                <label for="user_fechaNacimiento">Fecha de Nacimiento:</label>
+                <input type="text" id="user_fechaNacimiento" placeholder="Fecha de Nacimiento">
+                <label for="user_direccion">Dirección:</label>
+                <input type="text" id="user_direccion" placeholder="Dirección">
+            </div>
+            <button type="button" id="enviar">Enviar Datos</button>
+        </section>
+
+        <h3>Datos de Comprobante</h3>
+        <section>
+            <div id="datosComprobante">
+                <label for="cuenta_bancaria">Cuenta Bancaria:</label>
+                <input type="text" id="cuenta_bancaria" placeholder="Número de Cuenta">
+                <div id="cursos">
+                    <label for="user_curso">Seleccione el Curso al que pertenece el depósito</label>
+                    <select id="user_curso" name="user_curso">
+                        <!-- Las opciones se llenarán aquí -->
+                    </select>
+                </div>
+                <label for="comprobante_valor">Valor de la Transacción:</label>
+                <input type="number" id="comprobante_valor" placeholder="Ejm: 20.00">
+
+                <label for="comprobante_fecha">Fecha de Transacción:</label>
+                <input type="date" id="comprobante_fecha" name="comprobante_fecha"/>
+
+                <label for="archivo">archivo:</label>
+                <input type="file" id="archivo" name="archivo">
+            </div>
+            <button type="button" id="enviar">Enviar Datos</button>
+        </section>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            $("#form").steps({
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slideLeft",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    if (currentIndex === 0 && newIndex === 1) {
+                        // Verificar cédula antes de pasar al siguiente paso
+                        var cedula = $("#nombre").val();
+                        console.log("Cédula:", cedula); // Imprime la cédula en la consola
+
+                        return $.get(`https://cursos.isteps.edu.ec/webservice/rest/server.php?wstoken=33b23cd3fa1ae0d0e5d3d4df15541222&wsfunction=core_user_get_users_by_field&field=username&values[0]=${cedula}&moodlewsrestformat=json`)
+                            .done(function (data) {
+                                console.log("Datos recibidos:", data); // Imprime los datos recibidos en la consola
+                                if (data.length > 0) {
+                                    alert("Datos del estudiante obtenidos exitosamente");
+                                    var estudiante = data[0];
+                                    var parts = estudiante.lastname.split(' ');
+
+                                    // Transformar la fecha de nacimiento
+                                    var timestamp = estudiante.customfields[3].value * 1000;
+                                    var fechaNacimiento = new Date(timestamp);
+                                    var dia = ("0" + fechaNacimiento.getDate()).slice(-2);
+                                    var mes = ("0" + (fechaNacimiento.getMonth() + 1)).slice(-2);
+                                    var anio = fechaNacimiento.getFullYear();
+                                    var fechaFormateada = `${dia}-${mes}-${anio}`;
+                                    var id_Estudiante = estudiante.id
+
+                                    console.log(id_Estudiante)
+
+                                    // Llenar los inputs con los datos obtenidos
+                                    $("#user_nombres").val(estudiante.firstname);
+                                    $("#user_apellido_p").val(parts[0]);
+                                    $("#user_apellido_m").val(parts[1]);
+                                    $("#user_correo").val(estudiante.email);
+                                    $("#user_telefono_Movil").val(estudiante.customfields[4].value);
+                                    $("#user_sexo").val(estudiante.customfields[2].value);
+                                    $("#user_fechaNacimiento").val(fechaFormateada);
+                                    $("#user_direccion").val(estudiante.customfields[0].value);
+                                    // Mostrar los inputs si estaban ocultos
+                                    $("#datosEstudiante").show();
+
+                                    // Obtener cursos del estudiante
+                                    $.get(`https://cursos.isteps.edu.ec/webservice/rest/server.php?wstoken=33b23cd3fa1ae0d0e5d3d4df15541222&wsfunction=core_enrol_get_users_courses&userid=${id_Estudiante}&moodlewsrestformat=json`)
+                                        .done(function (cursos) {
+                                            console.log("Cursos recibidos:", cursos);
+                                            cursos.forEach(function (curso) {
+                                                $('#user_curso').append(`<option value="${curso.id}">${curso.fullname}</option>`);
+                                            })
+                                            if (cursos.error) {
+                                                alert(cursos.error);
+                                            } else {
+                                                cursos.forEach(function (curso) {
+                                                    //$("#cursos").append(`<p>${curso.fullname}</p>`);
+                                                });
+                                            }
+                                        })
+                                        .fail(function () {
+                                            alert("Error al obtener los cursos del estudiante");
+                                        });
+
+                                } else {
+                                    alert("No se encontraron datos para la cédula proporcionada");
+                                    return false;
+                                }
+                            })
+                            .fail(function () {
+                                alert("Error al obtener los datos del estudiante");
+                                return false;
+                            });
+                    }
+                    return true;
+                },
+                onFinished: function (event, currentIndex) {
+                    // Enviar datos al finalizar el formulario
+                    var sexo = 0;
+
+                    // Validar el sexo
+                    if ($("#user_sexo").val() == 'Femenino') {
+                        console.log('entro femenino')
+                        sexo = 1
+                    } else if ($("#user_sexo").val() == 'Masculino') {
+                        console.log('entro masculino')
+                        sexo = 2
+                    }
+
+                    var estudiante = {
+                        cedula: $("#nombre").val(),
+                        nombres: $("#user_nombres").val(),
+                        apellido1: $("#user_apellido_p").val(),
+                        apellido2: $("#user_apellido_m").val(),
+                        emailinstitucional: $("#user_correo").val(),
+                        email: $("#user_correo").val(),
+                        sexo: sexo,
+                        fechanacimiento: $("#user_fechaNacimiento").val(),
+                        telefono_movil: $("#user_telefono_Movil").val(),
+                        telefono_fijo: $("#user_telefono_Movil").val(),
+                        direccion: $("#user_direccion").val(),
+                        malla: 22,
+                        coordinacion: 10,
+                        sesion: 12,
+                        habilitado: false
+                    };
+
+                    console.log("Datos a enviar:", estudiante); // Imprime los datos a enviar en la consola
+
+                    $.ajax({
+                        type: "POST",
+                        url: 'https://sga.isteps.edu.ec/api',
+                        data: {
+                            key: 'fd3569c8-f83f-49a9-8612-9227c9b93104',
+                            a: 'registrarinscripcion',
+                            ...estudiante
+                        },
+                        success: function (response) {
+                            console.log('Respuesta del servidor en el servicio:', response);
+                            alert('Soporte registrado en la Base de datos correctamente!');
+
+                            // Enviar el archivo después de registrar los datos
+                            var formData = new FormData();
+                            formData.append('key', 'fd3569c8-f83f-49a9-8612-9227c9b93104');
+                            formData.append('a', 'cargarpagobanco');
+                            formData.append('archivo', $('#archivo')[0].files[0]);
+
+                            $.ajax({
+                                type: "POST",
+                                url: 'https://sga.isteps.edu.ec/api',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (response) {
+                                    console.log('Archivo subido correctamente:', response);
+                                    alert('Archivo subido correctamente!');
+                                },
+                                error: function (error) {
+                                    console.log("Error al subir el archivo:", error);
+                                    alert('Error al subir el archivo');
+                                }
+                            });
+                        },
+                        error: function (error) {
+                            console.log("Error:", error);
+                            alert('Error al registrar el soporte en la Base de datos');
+                        }
+                    });
+                }
+            });
+
+            // Ocultar los inputs al cargar la página
+            $("#datosEstudiante").hide();
+        });
+    </script>
+
 </body>
 </html>
