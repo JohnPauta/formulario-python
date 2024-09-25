@@ -26,15 +26,22 @@ def index(request):
                 "sesion": request.POST["estudiante[sesion]"],
                 "habilitado": request.POST["estudiante[habilitado]"],
             }
-            respuesta = requests.post("https://sga.isteps.edu.ec/api", data=json_datos, timeout=10)
+            respuesta = requests.post(
+                "https://sga.isteps.edu.ec/api", data=json_datos, timeout=10
+            )
             datosrespuesta = json.loads(respuesta.content)
             if datosrespuesta["result"] == "ok":
                 return JsonResponse({"success": True})
-            return JsonResponse({"success": False, "message": "Error en creacion del estudiante"})
+            return JsonResponse(
+                {"success": False, "message": "Error en creacion del estudiante"}
+            )
         except request.exceptions.RequestException as ex:
             print(ex)
             return JsonResponse(
-                {"success": False, "message": "Excepcion: Error en creacion del estudiante"}
+                {
+                    "success": False,
+                    "message": "Excepcion: Error en creacion del estudiante",
+                }
             )
     else:
         return render(request, "registro.html")
