@@ -1,0 +1,8 @@
+.step-current {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-family: 'Montserrat';
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #f38749; }
